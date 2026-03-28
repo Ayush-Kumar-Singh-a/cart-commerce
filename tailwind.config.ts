@@ -12,8 +12,20 @@ export default {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+        roboto: ['Roboto', 'sans-serif'],
+      },
     extend: {
       colors: {
+        flipkart: {
+          blue: "hsl(var(--flipkart-blue))",
+          yellow: "hsl(var(--flipkart-yellow))",
+          green: "hsl(var(--flipkart-green))",
+          orange: "hsl(var(--flipkart-orange))",
+          dark: "hsl(var(--flipkart-dark))",
+          "light-bg": "hsl(var(--flipkart-light-bg))",
+          banner: "hsl(var(--flipkart-banner))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
