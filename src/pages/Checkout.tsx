@@ -146,9 +146,10 @@ const Checkout = () => {
                   </div>
                   <Button
                     type="submit"
+                    disabled={placing}
                     className="bg-flipkart-orange hover:bg-flipkart-orange/90 text-primary-foreground font-bold rounded-sm h-12 w-full sm:w-auto sm:px-16 text-base"
                   >
-                    CONTINUE
+                    {placing ? "PLACING ORDER..." : "PLACE ORDER"}
                   </Button>
                 </div>
               </div>
