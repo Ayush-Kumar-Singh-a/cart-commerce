@@ -18,6 +18,7 @@ const Checkout = () => {
     state: "",
     pincode: "",
   });
+  const [placing, setPlacing] = useState(false);
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
@@ -26,8 +27,6 @@ const Checkout = () => {
     navigate("/cart");
     return null;
   }
-
-  const [placing, setPlacing] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
