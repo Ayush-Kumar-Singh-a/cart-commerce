@@ -18,6 +18,7 @@ const Checkout = () => {
     state: "",
     pincode: "",
   });
+  const [placing, setPlacing] = useState(false);
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
@@ -27,10 +28,15 @@ const Checkout = () => {
     return null;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const orderId = placeOrder(address);
-    navigate(`/order-confirmation/${orderId}`);
+    setPlacing(true);
+    try {
+      const orderId = await placeOrder(address);
+      navigate(`/order-confirmation/${orderId}`);
+    } catch {
+      setPlacing(false);
+    }
   };
 
   const handleChange = (field: keyof ShippingAddress, value: string) => {
@@ -140,9 +146,10 @@ const Checkout = () => {
                   </div>
                   <Button
                     type="submit"
+                    disabled={placing}
                     className="bg-flipkart-orange hover:bg-flipkart-orange/90 text-primary-foreground font-bold rounded-sm h-12 w-full sm:w-auto sm:px-16 text-base"
                   >
-                    CONTINUE
+                    {placing ? "PLACING ORDER..." : "PLACE ORDER"}
                   </Button>
                 </div>
               </div>
