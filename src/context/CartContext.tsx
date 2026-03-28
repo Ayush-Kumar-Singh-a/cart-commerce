@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { CartItem, Product, Order, ShippingAddress } from "@/types";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CartContextType {
   items: CartItem[];
@@ -11,7 +12,8 @@ interface CartContextType {
   clearCart: () => void;
   getCartTotal: () => number;
   getCartCount: () => number;
-  placeOrder: (address: ShippingAddress) => string;
+  placeOrder: (address: ShippingAddress) => Promise<string>;
+  loadingOrders: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -21,10 +23,41 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem("flipkart-cart");
     return saved ? JSON.parse(saved) : [];
   });
-  const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem("flipkart-orders");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
+  // Fetch orders from Supabase on mount
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoadingOrders(true);
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data) {
+        const mapped: Order[] = data.map((row: any) => ({
+          id: row.order_id,
+          items: row.items as CartItem[],
+          total: Number(row.total),
+          address: {
+            fullName: row.full_name,
+            phone: row.phone,
+            addressLine1: row.address_line1,
+            addressLine2: row.address_line2 || "",
+            city: row.city,
+            state: row.state,
+            pincode: row.pincode,
+          },
+          date: row.created_at,
+          status: row.status,
+        }));
+        setOrders(mapped);
+      }
+      setLoadingOrders(false);
+    };
+    fetchOrders();
+  }, []);
 
   const save = (newItems: CartItem[]) => {
     setItems(newItems);
@@ -82,9 +115,32 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items]);
 
   const placeOrder = useCallback(
-    (address: ShippingAddress) => {
-      const orderId = "OD" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
-      const order: Order = {
+    async (address: ShippingAddress): Promise<string> => {
+      const orderId =
+        "OD" +
+        Date.now().toString(36).toUpperCase() +
+        Math.random().toString(36).substring(2, 6).toUpperCase();
+
+      const { error } = await supabase.from("orders").insert({
+        order_id: orderId,
+        items: items as any,
+        total: getCartTotal(),
+        full_name: address.fullName,
+        phone: address.phone,
+        address_line1: address.addressLine1,
+        address_line2: address.addressLine2 || null,
+        city: address.city,
+        state: address.state,
+        pincode: address.pincode,
+        status: "Confirmed",
+      });
+
+      if (error) {
+        toast({ title: "Error placing order", description: error.message, variant: "destructive" });
+        throw error;
+      }
+
+      const newOrder: Order = {
         id: orderId,
         items: [...items],
         total: getCartTotal(),
@@ -92,13 +148,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         date: new Date().toISOString(),
         status: "Confirmed",
       };
-      const newOrders = [...orders, order];
-      setOrders(newOrders);
-      localStorage.setItem("flipkart-orders", JSON.stringify(newOrders));
+      setOrders((prev) => [newOrder, ...prev]);
       save([]);
       return orderId;
     },
-    [items, orders, getCartTotal]
+    [items, getCartTotal]
   );
 
   return (
@@ -113,6 +167,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         getCartTotal,
         getCartCount,
         placeOrder,
+        loadingOrders,
       }}
     >
       {children}

@@ -27,10 +27,17 @@ const Checkout = () => {
     return null;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [placing, setPlacing] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const orderId = placeOrder(address);
-    navigate(`/order-confirmation/${orderId}`);
+    setPlacing(true);
+    try {
+      const orderId = await placeOrder(address);
+      navigate(`/order-confirmation/${orderId}`);
+    } catch {
+      setPlacing(false);
+    }
   };
 
   const handleChange = (field: keyof ShippingAddress, value: string) => {
