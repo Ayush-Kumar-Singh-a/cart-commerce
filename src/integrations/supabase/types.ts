@@ -20,6 +20,7 @@ export type Database = {
           address_line2: string | null
           city: string
           created_at: string
+          email: string | null
           full_name: string
           id: string
           items: Json
@@ -35,6 +36,7 @@ export type Database = {
           address_line2?: string | null
           city: string
           created_at?: string
+          email?: string | null
           full_name: string
           id?: string
           items: Json
@@ -50,6 +52,7 @@ export type Database = {
           address_line2?: string | null
           city?: string
           created_at?: string
+          email?: string | null
           full_name?: string
           id?: string
           items?: Json
@@ -59,6 +62,27 @@ export type Database = {
           state?: string
           status?: string
           total?: number
+        }
+        Relationships: []
+      }
+      wishlist: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          user_id?: string
         }
         Relationships: []
       }
