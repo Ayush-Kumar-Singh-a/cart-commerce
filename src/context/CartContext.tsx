@@ -42,6 +42,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           total: Number(row.total),
           address: {
             fullName: row.full_name,
+            email: row.email || "",
             phone: row.phone,
             addressLine1: row.address_line1,
             addressLine2: row.address_line2 || "",
