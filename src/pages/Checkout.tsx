@@ -11,6 +11,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [address, setAddress] = useState<ShippingAddress>({
     fullName: "",
+    email: "",
     phone: "",
     addressLine1: "",
     addressLine2: "",
