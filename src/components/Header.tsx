@@ -1,12 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, ChevronDown, Menu } from "lucide-react";
+import { Search, ShoppingCart, ChevronDown, Heart, User, LogOut } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { searchProducts } from "@/data/products";
-import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
   const { getCartCount } = useCart();
+  const { user, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const navigate = useNavigate();
@@ -20,6 +21,11 @@ const Header = () => {
       navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
       setShowSuggestions(false);
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
   };
 
   return (
@@ -70,7 +76,31 @@ const Header = () => {
           </form>
 
           {/* Nav items */}
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-4 sm:gap-6">
+            {user ? (
+              <button
+                onClick={handleSignOut}
+                className="flex items-center gap-1 text-primary-foreground font-medium text-sm"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                className="flex items-center gap-1 text-primary-foreground font-medium text-sm"
+              >
+                <User className="w-5 h-5" />
+                <span className="hidden sm:inline">Login</span>
+              </Link>
+            )}
+            <Link
+              to="/wishlist"
+              className="flex items-center gap-1 text-primary-foreground font-medium text-sm"
+            >
+              <Heart className="w-5 h-5" />
+              <span className="hidden sm:inline">Wishlist</span>
+            </Link>
             <Link
               to="/cart"
               className="flex items-center gap-1 text-primary-foreground font-medium text-sm relative"

@@ -2,16 +2,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getProductById } from "@/data/products";
 import Header from "@/components/Header";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { useState } from "react";
-import { Star, ShoppingCart, Zap, ChevronLeft, ChevronRight, Shield, Truck, RefreshCw } from "lucide-react";
+import { Star, ShoppingCart, Zap, ChevronLeft, ChevronRight, Shield, Truck, RefreshCw, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const product = getProductById(id || "");
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
+  const wishlisted = product ? isInWishlist(product.id) : false;
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
@@ -114,7 +117,15 @@ const ProductDetail = () => {
                 Home &gt; {product.category} &gt; {product.brand}
               </nav>
 
-              <h1 className="text-lg font-medium text-foreground mb-2">{product.name}</h1>
+              <div className="flex items-center justify-between mb-2">
+                <h1 className="text-lg font-medium text-foreground">{product.name}</h1>
+                <button
+                  onClick={() => toggleWishlist(product.id)}
+                  className="p-2 rounded-full hover:bg-accent"
+                >
+                  <Heart className={`w-5 h-5 ${wishlisted ? "fill-destructive text-destructive" : "text-muted-foreground"}`} />
+                </button>
+              </div>
 
               <div className="flex items-center gap-3 mb-4">
                 <span className="inline-flex items-center gap-0.5 bg-flipkart-green text-white text-sm font-bold px-2 py-0.5 rounded-sm">

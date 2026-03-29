@@ -11,6 +11,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [address, setAddress] = useState<ShippingAddress>({
     fullName: "",
+    email: "",
     phone: "",
     addressLine1: "",
     addressLine2: "",
@@ -69,6 +70,19 @@ const Checkout = () => {
                         onChange={(e) => handleChange("fullName", e.target.value)}
                         className="mt-1 rounded-sm"
                         placeholder="Enter full name"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground uppercase">
+                        Email *
+                      </label>
+                      <Input
+                        required
+                        type="email"
+                        value={address.email}
+                        onChange={(e) => handleChange("email", e.target.value)}
+                        className="mt-1 rounded-sm"
+                        placeholder="Enter email address"
                       />
                     </div>
                     <div>
