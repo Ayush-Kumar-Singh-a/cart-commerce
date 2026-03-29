@@ -2,8 +2,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getProductById } from "@/data/products";
 import Header from "@/components/Header";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { useState } from "react";
-import { Star, ShoppingCart, Zap, ChevronLeft, ChevronRight, Shield, Truck, RefreshCw } from "lucide-react";
+import { Star, ShoppingCart, Zap, ChevronLeft, ChevronRight, Shield, Truck, RefreshCw, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ProductDetail = () => {
