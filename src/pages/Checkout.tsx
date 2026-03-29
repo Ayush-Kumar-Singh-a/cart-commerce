@@ -74,6 +74,19 @@ const Checkout = () => {
                     </div>
                     <div>
                       <label className="text-xs font-medium text-muted-foreground uppercase">
+                        Email *
+                      </label>
+                      <Input
+                        required
+                        type="email"
+                        value={address.email}
+                        onChange={(e) => handleChange("email", e.target.value)}
+                        className="mt-1 rounded-sm"
+                        placeholder="Enter email address"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground uppercase">
                         Phone Number *
                       </label>
                       <Input
