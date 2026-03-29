@@ -11,8 +11,10 @@ const ProductDetail = () => {
   const { id } = useParams();
   const product = getProductById(id || "");
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
+  const wishlisted = product ? isInWishlist(product.id) : false;
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
