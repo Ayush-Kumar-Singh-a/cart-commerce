@@ -117,7 +117,15 @@ const ProductDetail = () => {
                 Home &gt; {product.category} &gt; {product.brand}
               </nav>
 
-              <h1 className="text-lg font-medium text-foreground mb-2">{product.name}</h1>
+              <div className="flex items-center justify-between mb-2">
+                <h1 className="text-lg font-medium text-foreground">{product.name}</h1>
+                <button
+                  onClick={() => toggleWishlist(product.id)}
+                  className="p-2 rounded-full hover:bg-accent"
+                >
+                  <Heart className={`w-5 h-5 ${wishlisted ? "fill-destructive text-destructive" : "text-muted-foreground"}`} />
+                </button>
+              </div>
 
               <div className="flex items-center gap-3 mb-4">
                 <span className="inline-flex items-center gap-0.5 bg-flipkart-green text-white text-sm font-bold px-2 py-0.5 rounded-sm">
